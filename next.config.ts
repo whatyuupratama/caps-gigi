@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
       'media.istockphoto.com',
       'images.remotePatterns',
       'images.domain',
+      'i.pinimg.com',
+      'media.licdn.com',
+      'cdn.discordapp.com',
     ],
   },
 };

@@ -3,40 +3,48 @@ import Image from 'next/image';
 import { GridPatternDemo } from '@/components/fragments/molecule/GridPatternDemo';
 import { ShimmerButton } from '@/components/magicui/shimmer-button';
 import Link from 'next/link';
-
+// import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
+// const words = `🦷`;
 const Section = () => {
   return (
-    <div className='w-screen min-h-screen flex items-center justify-center py-16 relative overflow-hidden '>
+    <div
+      id='home-section'
+      className='w-screen min-h-screen flex items-center justify-center py-16 relative overflow-hidden'
+    >
       <GridPatternDemo className='absolute inset-0 w-full h-full' />
 
       <div className='container relative z-10 mx-auto px-4 md:px-8'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
-          <div className='w-full'>
-            <div className='relative w-full h-64 sm:h-72 md:h-96 lg:h-96 aspect-w-1 aspect-h-1 rounded-xl overflow-hidden shadow-lg'>
+        <div className='flex flex-col md:flex-row items-center md:items-start justify-center gap-8'>
+          {/* Image Section */}
+          <div className='flex-shrink-0'>
+            <div className='relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-xl overflow-hidden'>
               <Image
-                src='/anak2.jpg'
+                src='/gigii.png'
                 alt='Logo'
-                layout='fill'
                 objectFit='cover'
-                className='bg-white'
+                width={600}
+                height={600}
               />
             </div>
           </div>
-          <div className='text-center md:text-left'>
-            <h2 className='text-3xl md:text-4xl font-bold mb-4 text-gray-900'>
-              Deteksi Pertumbuhan Gigi Bungsu
+          {/* Text Section */}
+          <div className='text-center md:text-left max-w-lg'>
+            <h2 className='text-3xl md:text-7xl font-bold mb-4 text-gray-900 flex items-center'>
+              Deteksi Risiko Gigi Berlubang pada Anak
+              {/* <TextGenerateEffect words={words} className='ml-2' /> */}
             </h2>
+
             <p className='text-lg md:text-xl mb-6 text-gray-600'>
-              Cari tahu cara mendeteksi pertumbuhan gigi bungsu menggunakan
-              hasil ronsen. Mengetahui kapan gigi bungsu mulai tumbuh sangat
-              penting untuk kesehatan mulut Anda. Dapatkan informasi lebih
-              lanjut untuk mencegah masalah yang mungkin timbul!
+              Pelajari cara mendeteksi risiko gigi berlubang pada anak usia 3-6
+              tahun. Mengetahui tanda-tanda awal kerusakan gigi susu sangat
+              penting untuk menjaga kesehatan mulut anak Anda. Dapatkan
+              informasi lebih lanjut untuk mencegah masalah gigi sejak dini!
             </p>
-            <div className='mt-8'>
+            <div>
               <Link href='/gigi-detection' passHref>
                 <ShimmerButton
                   className='text-sm font-medium'
-                  background='#A0153E'
+                  background='#87003d'
                   shimmerSize='0.1em'
                 >
                   Yuk, Deteksi
