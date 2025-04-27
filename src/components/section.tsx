@@ -3,8 +3,9 @@ import Image from 'next/image';
 import { GridPatternDemo } from '@/components/fragments/molecule/GridPatternDemo';
 import { ShimmerButton } from '@/components/magicui/shimmer-button';
 import Link from 'next/link';
+import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 // import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
-// const words = `🦷`;
+const world = `Deteksi Risiko Gigi Berlubang pada Anak `;
 const Section = () => {
   return (
     <div
@@ -29,9 +30,14 @@ const Section = () => {
           </div>
           {/* Text Section */}
           <div className='text-center md:text-left max-w-lg'>
-            <h2 className='text-3xl md:text-7xl font-bold mb-4 text-gray-900 flex items-center'>
-              Deteksi Risiko Gigi Berlubang pada Anak
+            <h2 className='text-3xl md:text-7xl font-bold mb-4 text-black flex items-center'>
+              {/* Deteksi Risiko Gigi Berlubang pada Anak */}
               {/* <TextGenerateEffect words={words} className='ml-2' /> */}
+              <TextGenerateEffect
+                words={world}
+                className='w-2/2 font-extrabold '
+                textColor='text-black'
+              />
             </h2>
 
             <p className='text-lg md:text-xl mb-6 text-gray-600'>

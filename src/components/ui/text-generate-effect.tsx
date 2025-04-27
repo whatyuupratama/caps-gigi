@@ -9,11 +9,13 @@ export const TextGenerateEffect = ({
   className,
   filter = true,
   duration = 0.5,
+  textColor = 'text-white', // Default text color
 }: {
   words: string;
   className?: string;
   filter?: boolean;
   duration?: number;
+  textColor?: string; // New prop for text color
 }) => {
   const [scope, animate] = useAnimate();
   const wordsArray = words.split(' ');
@@ -66,7 +68,7 @@ export const TextGenerateEffect = ({
           return (
             <motion.span
               key={word + idx}
-              className={`dark:text-white text-white opacity-0 text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-6xl ${
+              className={`${textColor} opacity-0 text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-6xl ${
                 isTooth ? styles.simpleShake : ''
               }`} // Use styles.simpleShake
               style={{
@@ -84,7 +86,7 @@ export const TextGenerateEffect = ({
   return (
     <div className={cn('font-bold', className)}>
       <div className='mt-4'>
-        <div className='dark:text-white text-black text-2xl leading-snug tracking-wide'>
+        <div className='text-2xl leading-snug tracking-wide'>
           {renderWords()}
         </div>
       </div>
