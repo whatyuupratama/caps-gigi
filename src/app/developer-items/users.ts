@@ -31,8 +31,9 @@ export const users = [
     name: 'Muhammad Faris',
     university: 'Universitas Potensi Utama',
     role: 'Frontend & Backend',
-    image: '/anak2.jpg',
-    linkedin: 'https://www.linkedin.com/in/muhammadfaris',
+    image:
+      'https://cdn.discordapp.com/attachments/1361161120181653654/1365984364135190650/IMG-20250427-WA0055.jpg?ex=680f4b93&is=680dfa13&hm=d52182f043308a881e2e4fc6a64ca8cfa94796c9154c9b54ef2a34d6a2fb8f4e&',
+    linkedin: 'https://www.linkedin.com/in/farismuhammad28/',
   },
   {
     id: 5,
