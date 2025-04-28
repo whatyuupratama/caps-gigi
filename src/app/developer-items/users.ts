@@ -4,8 +4,7 @@ export const users = [
     name: 'Wahyu Pratama',
     university: 'Institut Teknologi Dan Bisnis Asia Malang',
     role: 'Lead & Project Manager',
-    image:
-      'https://media.licdn.com/dms/image/v2/D5603AQHI6kYNEVSk1w/profile-displayphoto-shrink_400_400/B56ZXWR490HoAk-/0/1743056769981?e=1751500800&v=beta&t=tIoroIbpFb2WMz0YxtsOIBRkWXNwgXnXYUdZJuCcEmo',
+    image: '/wdev.jpeg',
     linkedin: 'https://www.linkedin.com/in/wahyupratamaa/',
   },
   {

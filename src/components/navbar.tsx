@@ -58,7 +58,7 @@ const Navbar = () => {
           <div className='flex items-center text-center  gap-5'>
             <Link href='/'>
               <span
-                className='py-2 px-4 cursor-pointer rounded-sm bg-[#9e2146] text-white hover:bg-[#7c1835] transition-colors duration-200'
+                className='py-2 px-4 cursor-pointer rounded-sm bg-[#F8E8F2] text-[#7c1835] transition-colors duration-200'
                 onClick={() => {
                   const element = document.getElementById('home-section');
                   if (element) {
