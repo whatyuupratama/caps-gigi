@@ -34,7 +34,7 @@ const Items = () => {
           </Link>
         </div>
         <h1 className='text-6xl font-bold mb-4 text-center flex gap-3 items-center'>
-          Capstone CavityCheck{' '}
+          Capstone GigiSehat{' '}
           <Image src={'/gigii.png'} alt='logo' width={80} height={80}></Image>
         </h1>
         <h2 className='text-2xl font-bold mb-26 text-center  w-5/6'>

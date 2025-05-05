@@ -75,11 +75,15 @@ export function AnimatedBeamDemo() {
         toRef={div4Ref}
         curvature={-75}
         endYOffset={-10}
+        pathWidth={3}
+        pathColor='white'
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={div2Ref}
         toRef={div4Ref}
+        pathWidth={3}
+        pathColor='white'
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -87,6 +91,8 @@ export function AnimatedBeamDemo() {
         toRef={div4Ref}
         curvature={75}
         endYOffset={10}
+        pathWidth={3}
+        pathColor='white'
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -94,12 +100,16 @@ export function AnimatedBeamDemo() {
         toRef={div4Ref}
         curvature={-75}
         endYOffset={-10}
+        pathWidth={3}
+        pathColor='white'
         reverse
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={div6Ref}
         toRef={div4Ref}
+        pathWidth={3}
+        pathColor='white'
         reverse
       />
       <AnimatedBeam
@@ -108,6 +118,8 @@ export function AnimatedBeamDemo() {
         toRef={div4Ref}
         curvature={75}
         endYOffset={10}
+        pathWidth={3}
+        pathColor='white'
         reverse
       />
     </div>

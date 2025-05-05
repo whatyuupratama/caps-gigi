@@ -65,7 +65,7 @@ const Fitur = () => {
                   background='#87003d'
                   shimmerSize='0.1em'
                 >
-                  Pelajari Lebih Lanjut
+                  Lebih lanjut
                 </ShimmerButton>
               </Link>
             </div>
