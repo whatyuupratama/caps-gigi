@@ -1,37 +1,72 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect, CSSProperties } from 'react';
 import { Ripple } from '@/components/magicui/ripple';
 import Link from 'next/link';
 import Button from '@/components/fragments/Button';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
-import { CSSProperties } from 'react';
-import Infopenting from './infopenting';
+// import Infopenting from './infopenting';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
+
 const world = `Yuk, Cegah Gigi Berlubang! 🦷`;
+
+interface Soal {
+  id: string;
+  pertanyaan: string;
+}
+
 const GigiDetection = () => {
-  const [showInput, setShowInput] = useState(false);
+  const [soal, setSoal] = useState<Soal[]>([]);
+  const [answers, setAnswers] = useState<{ [key: string]: 'yes' | 'no' }>({});
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({
-    question1: null,
-    question2: null,
-    question3: null,
-    question4: null,
-    question5: null,
-  });
+  const [showInput, setShowInput] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [apiResult, setApiResult] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/soal')
+      .then((res) => res.json())
+      .then((data) => setSoal(data))
+      .catch(() => setSoal([]));
+  }, []);
+
+  const handleSubmitToAPI = async () => {
+    const payload: Record<string, number> = {};
+    soal.forEach((q) => {
+      payload[q.id] = answers[q.id] === 'yes' ? 1 : 0;
+    });
+
+    try {
+      const res = await fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      setApiResult(data.hasil);
+    } catch {
+      setApiResult(
+        'Gagal menghubungi server. Pastikan backend Flask berjalan.'
+      );
+    }
+  };
 
   const handleButtonClick = () => {
     setShowInput(true);
-    setCurrentQuestion(1);
+    setCurrentQuestion(0);
   };
 
-  const handleAnswer = (question: string, answer: 'yes' | 'no') => {
-    setAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [question]: answer,
+  const handleAnswer = (id: string, answer: 'yes' | 'no') => {
+    setAnswers((prev) => ({
+      ...prev,
+      [id]: answer,
     }));
+  };
+
+  const isCurrentQuestionAnswered = () => {
+    if (!soal.length) return false;
+    return answers[soal[currentQuestion]?.id] !== undefined;
   };
 
   const handleNext = () => {
@@ -39,61 +74,25 @@ const GigiDetection = () => {
       setShowAlert(true);
       return;
     }
-
-    if (currentQuestion < 5) {
+    if (currentQuestion < soal.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowResult(true);
+      handleSubmitToAPI();
     }
   };
 
   const handlePrevious = () => {
-    if (currentQuestion === 1) {
+    if (currentQuestion === 0) {
       setShowInput(false);
       setCurrentQuestion(0);
-    } else if (currentQuestion > 1) {
+    } else if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-    }
-  };
-
-  const isCurrentQuestionAnswered = () => {
-    switch (currentQuestion) {
-      case 1:
-        return answers.question1 !== null;
-      case 2:
-        return answers.question2 !== null;
-      case 3:
-        return answers.question3 !== null;
-      case 4:
-        return answers.question4 !== null;
-      case 5:
-        return answers.question5 !== null;
-      default:
-        return false;
-    }
-  };
-  const calculateRisk = () => {
-    let riskScore = 0;
-
-    if (answers.question1 === 'yes') riskScore++; // Makan/minum manis
-    if (answers.question2 === 'yes') riskScore++; // Tidur dengan botol/dot manis
-    if (answers.question3 === 'no') riskScore++; // Jarang membersihkan gigi
-    if (answers.question4 === 'yes') riskScore++; // Riwayat keluarga
-    if (answers.question5 === 'yes') riskScore++; // Kebiasaan menggigit benda keras
-
-    if (riskScore >= 3) {
-      return 'Anak anda terindikasi risiko tinggi gigi berlubang. Konsultasikan dengan dokter gigi segera.';
-    } else {
-      return 'Anak anda terindikasi risiko rendah gigi berlubang. Tetap jaga kebersihan gigi dan mulut yaa.';
     }
   };
 
   const closeAlert = () => {
     setShowAlert(false);
-  };
-
-  const calculateProgress = () => {
-    return (currentQuestion / 5) * 100;
   };
 
   const questionStyle: CSSProperties = {
@@ -152,203 +151,63 @@ const GigiDetection = () => {
             </>
           )}
 
-          {showInput && !showResult && currentQuestion > 0 && (
+          {showInput && !showResult && soal.length > 0 && (
             <div className='mt-6'>
               <div style={questionStyle}>
-                {currentQuestion === 1 && (
-                  <div className='question '>
-                    <div className='flex flex-col gap-3'>
-                      <span className='font-bold text-4xl'>
-                        Anak anda mengonsumsi makanan atau minuman manis dalam
-                        sehari?
-                      </span>
-                      <div className='mt-2 flex justify-start gap-4'>
-                        <button
-                          onClick={() => handleAnswer('question1', 'yes')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question1 === 'yes'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Iya
-                        </button>
-                        <button
-                          onClick={() => handleAnswer('question1', 'no')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question1 === 'no'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Tidak
-                        </button>
-                      </div>
-                      <Infopenting />
+                <div className='question'>
+                  <div className='flex flex-col gap-3'>
+                    <span className='font-bold text-4xl'>
+                      {soal[currentQuestion]?.pertanyaan}
+                    </span>
+                    <div className='mt-2 flex justify-start gap-4'>
+                      <button
+                        onClick={() =>
+                          handleAnswer(soal[currentQuestion].id, 'yes')
+                        }
+                        className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
+                          answers[soal[currentQuestion].id] === 'yes'
+                            ? 'bg-[#A0153E] border text-white'
+                            : 'bg-white hover:bg-gray-200'
+                        }`}
+                      >
+                        Iya
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleAnswer(soal[currentQuestion].id, 'no')
+                        }
+                        className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
+                          answers[soal[currentQuestion].id] === 'no'
+                            ? 'bg-[#A0153E] border text-white'
+                            : 'bg-white hover:bg-gray-200'
+                        }`}
+                      >
+                        Tidak
+                      </button>
                     </div>
                   </div>
-                )}
-
-                {currentQuestion === 2 && (
-                  <div className='question'>
-                    <div className='flex flex-col gap-3'>
-                      <span className='font-bold text-4xl'>
-                        Anak anda sering tidur dengan botol susu atau dot atau
-                        minuman manis lainnya
-                      </span>
-                      <div className='mt-2 flex justify-start gap-4'>
-                        <button
-                          onClick={() => handleAnswer('question2', 'yes')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question2 === 'yes'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Iya
-                        </button>
-                        <button
-                          onClick={() => handleAnswer('question2', 'no')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question2 === 'no'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Tidak
-                        </button>
-                      </div>
-                      <Infopenting />
-                    </div>
-                  </div>
-                )}
-
-                {currentQuestion === 3 && (
-                  <div className='question'>
-                    <div className='flex flex-col gap-3'>
-                      <span className='font-bold text-4xl'>
-                        Seberapa sering anda membersihkan gigi anak anda dengan
-                        kain kasa, sikat gigi anak, atau cara lainnya?
-                      </span>
-                      <div className='mt-2 flex justify-start gap-4'>
-                        <button
-                          onClick={() => handleAnswer('question3', 'yes')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question3 === 'yes'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Iya
-                        </button>
-                        <button
-                          onClick={() => handleAnswer('question3', 'no')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question3 === 'no'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Tidak
-                        </button>
-                      </div>
-                      <Infopenting />
-                    </div>
-                  </div>
-                )}
-
-                {currentQuestion === 4 && (
-                  <div className='question'>
-                    <div className='flex flex-col gap-3'>
-                      <span className='font-bold text-4xl'>
-                        Apakah ada anggota keluarga dekat yang memiliki riwayat
-                        gigi berlubang yang sering atau parah?
-                      </span>
-                      <div className='mt-2 flex justify-start gap-4'>
-                        <button
-                          onClick={() => handleAnswer('question4', 'yes')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question4 === 'yes'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Iya
-                        </button>
-                        <button
-                          onClick={() => handleAnswer('question4', 'no')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question4 === 'no'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Tidak
-                        </button>
-                      </div>
-                      <span className='text-[12px] text-zinc-200 font-semibold'>
-                        Pilih jawaban yang paling sesuai untuk anak Anda.
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {currentQuestion === 5 && (
-                  <div className='question'>
-                    <div className='flex flex-col gap-3'>
-                      <span className='font-bold text-4xl'>
-                        Apakah anak Anda memiliki kebiasaan menggigit
-                        benda-benda keras seperti mainan, pensil, atau kuku?
-                      </span>
-                      <div className='mt-2 flex justify-start gap-4'>
-                        <button
-                          onClick={() => handleAnswer('question5', 'yes')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question5 === 'yes'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Iya
-                        </button>
-                        <button
-                          onClick={() => handleAnswer('question5', 'no')}
-                          className={`px-6 py-2 rounded-sm text-black transition duration-300 cursor-pointer ${
-                            answers.question5 === 'no'
-                              ? 'bg-[#A0153E] border text-white'
-                              : 'bg-white hover:bg-gray-200'
-                          }`}
-                        >
-                          Tidak
-                        </button>
-                      </div>
-                      <span className='text-[12px] text-zinc-200 font-semibold'>
-                        Pilih jawaban yang paling sesuai untuk anak Anda.
-                      </span>
-                    </div>
-                  </div>
-                )}
+                </div>
               </div>
-
               <div className='mt-4'>
                 <div className='w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700'>
                   <div
                     className='bg-zinc-500 h-2.5 rounded-full'
-                    style={{ width: `${calculateProgress()}%` }}
+                    style={{
+                      width: `${((currentQuestion + 1) / soal.length) * 100}%`,
+                    }}
                   ></div>
                 </div>
                 <span className='text-sm mt-2'>
-                  Pertanyaan {currentQuestion} dari 5
+                  Pertanyaan {currentQuestion + 1} dari {soal.length}
                 </span>
               </div>
-
               <div className='mt-6 flex justify-between'>
                 <button
                   onClick={handlePrevious}
                   disabled={currentQuestion === 0}
                   className='px-6 py-3 text-white rounded-sm border cursor-pointer hover:bg-white hover:border-white hover:text-[#87003d] transition duration-300 flex items-center gap-2'
                 >
-                  <IoIosArrowBack /> Sebelumnya
+                  <IoIosArrowBack />
                 </button>
                 <button
                   onClick={handleNext}
@@ -358,7 +217,9 @@ const GigiDetection = () => {
                       : 'bg-gray-400 cursor-not-allowed'
                   }`}
                 >
-                  {currentQuestion === 5 ? 'Lihat Hasil' : 'Selanjutnya'}
+                  {currentQuestion === soal.length - 1
+                    ? 'Lihat Hasil'
+                    : 'Selanjutnya'}
                 </button>
               </div>
             </div>
@@ -367,7 +228,9 @@ const GigiDetection = () => {
           {showResult && (
             <div className='mt-6'>
               <span className='font-bold text-7xl'>Hasil Deteksi 🤱</span>
-              <p className='mt-4 text-lg'>{calculateRisk()}</p>
+              <p className='mt-4 text-lg'>
+                {apiResult ? apiResult : 'Memproses...'}
+              </p>
             </div>
           )}
         </div>
@@ -377,68 +240,3 @@ const GigiDetection = () => {
 };
 
 export default GigiDetection;
-
-// bates
-
-// 'use client'; // Komponen ini dieksekusi di sisi klien
-
-// import React, { useState } from 'react';
-// import { FileUpload } from '@/components/ui/file-upload'; // Pastikan path sudah benar
-// import Link from 'next/link';
-// import { ShimmerButton } from '@/components/magicui/shimmer-button';
-// import { FaArrowLeftLong } from 'react-icons/fa6';
-// import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
-// import { Ripple } from '@/components/magicui/ripple';
-
-// const words = `Deteksi Risiko Pertumbuhan Gigi Bungsu 🦷`;
-
-// const GigiDetection = () => {
-//   const [file, setFile] = useState<File | null>(null);
-//   const handleFileChange = (uploadedFile: File | null) => {
-//     setFile(uploadedFile);
-//   };
-
-//   return (
-//     <div className='min-h-screen bg-[#96063b] flex justify-center items-center'>
-//       <Ripple />
-//       <div className='flex flex-col md:flex-row justify-between w-full max-w-6xl px-6 py-8'>
-//         <div className='relative z-10 flex flex-col gap-6 text-white text-center md:text-left w-full md:w-1/2'>
-//           <Link href='/' passHref>
-//             <span className='text-lg font-semibold hover:text-gray-200 hover:underline flex items-center gap-2'>
-//               <FaArrowLeftLong /> Halaman Utama
-//             </span>
-//           </Link>
-
-//           <TextGenerateEffect words={words} />
-//           <p className='text-sm font-medium mt-4'>
-//             Deteksi sekarang untuk mencegah komplikasi gigi bungsu Anda.{' '}
-//             <b>
-//               Program ini memerlukan hasil ronsen gigi untuk pemeriksaan dan
-//               penilaian risiko lebih akurat.
-//             </b>
-//           </p>
-
-//           {file && (
-//             <div className=' flex justify-start'>
-//               <Link href='/gigi-detection' passHref>
-//                 <ShimmerButton
-//                   className='text-sm'
-//                   background='#A0153E'
-//                   shimmerSize='0.1em'
-//                 >
-//                   Yuk,Deteksi
-//                 </ShimmerButton>
-//               </Link>
-//             </div>
-//           )}
-//         </div>
-
-//         <div className='w-full md:w-1/2 mt-8 md:mt-0'>
-//           <FileUpload onChange={handleFileChange} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default GigiDetection;
