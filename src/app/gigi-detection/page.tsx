@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Button from '@/components/fragments/Button';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
-// import Infopenting from './infopenting';
+import Infopenting from './infopenting';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 
 const world = `Yuk, Cegah Gigi Berlubang! 🦷`;
@@ -25,7 +25,7 @@ const GigiDetection = () => {
   const [apiResult, setApiResult] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/soal')
+    fetch('https://web-production-f7f49.up.railway.app/soal')
       .then((res) => res.json())
       .then((data) => setSoal(data))
       .catch(() => setSoal([]));
@@ -38,11 +38,14 @@ const GigiDetection = () => {
     });
 
     try {
-      const res = await fetch('http://localhost:5000/predict', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        'https://web-production-f7f49.up.railway.app/predict',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }
+      );
       const data = await res.json();
       setApiResult(data.hasil);
     } catch {
@@ -106,7 +109,7 @@ const GigiDetection = () => {
 
   return (
     <div className='w-screen h-screen bg-[#87003d] flex justify-center items-center'>
-      <div className='w-2/3 h-[55vh] bg-[#87003d] shadow-2xl rounded-xl overflow-hidden relative flex items-center justify-center px-16 py-10'>
+      <div className='w-2/3 h-[55vh] bg-[#87003d] shadow-2xl rounded-xl overflow-hidden relative flex items-center justify-start px-16 py-10'>
         <Ripple />
         {showAlert && (
           <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#87003d] border text-white rounded-md shadow-lg p-6 z-50'>
@@ -150,16 +153,15 @@ const GigiDetection = () => {
               </div>
             </>
           )}
-
           {showInput && !showResult && soal.length > 0 && (
-            <div className='mt-6'>
+            <div className='mt-6 '>
               <div style={questionStyle}>
                 <div className='question'>
                   <div className='flex flex-col gap-3'>
                     <span className='font-bold text-4xl'>
                       {soal[currentQuestion]?.pertanyaan}
                     </span>
-                    <div className='mt-2 flex justify-start gap-4'>
+                    <div className='mt-2 flex justify-start gap-4 w-full'>
                       <button
                         onClick={() =>
                           handleAnswer(soal[currentQuestion].id, 'yes')
@@ -185,6 +187,7 @@ const GigiDetection = () => {
                         Tidak
                       </button>
                     </div>
+                    <Infopenting />
                   </div>
                 </div>
               </div>
@@ -226,7 +229,7 @@ const GigiDetection = () => {
           )}
 
           {showResult && (
-            <div className='mt-6'>
+            <div className='mt-6 flex items-center justify-center'>
               <span className='font-bold text-7xl'>Hasil Deteksi 🤱</span>
               <p className='mt-4 text-lg'>
                 {apiResult ? apiResult : 'Memproses...'}
