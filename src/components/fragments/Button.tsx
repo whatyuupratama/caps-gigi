@@ -2,7 +2,7 @@ import React, { JSX } from 'react';
 
 type ButtonProps = {
   value: string;
-  variant: 'red' | 'white';
+  variant?: 'red' | 'white';
   className?: string;
   onClick?: () => void;
 };
