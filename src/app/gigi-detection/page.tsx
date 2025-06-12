@@ -25,7 +25,7 @@ const GigiDetection = () => {
   const [apiResult, setApiResult] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('https://web-production-f7f49.up.railway.app/soal')
+    fetch('https://web-production-0a46.up.railway.app/soal')
       .then((res) => res.json())
       .then((data) => setSoal(data))
       .catch(() => setSoal([]));
