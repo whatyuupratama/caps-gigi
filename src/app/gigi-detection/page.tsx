@@ -39,7 +39,7 @@ const GigiDetection = () => {
 
     try {
       const res = await fetch(
-        'https://web-production-f7f49.up.railway.app/predict',
+        'https://web-production-0a46.up.railway.app/predict',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
