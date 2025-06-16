@@ -31,7 +31,7 @@ export const users = [
     university: 'Universitas Potensi Utama',
     role: 'Frontend & Backend',
     image:
-      'https://cdn.discordapp.com/attachments/1361161120181653654/1365984364135190650/IMG-20250427-WA0055.jpg?ex=68109d13&is=680f4b93&hm=982f864212845b7ada208ec66cf79753ae075d1c8faa3a7089a5903ab69184d9&',
+      'https://cdn.discordapp.com/attachments/1361161120181653654/1384136862917988404/IMG-20250427-WA0055.jpg?ex=68515568&is=685003e8&hm=28a6886cf59634c43ad53bda14c1dd84877fafcb476e9b87dd5b33770aa08e5f&',
     linkedin: 'https://www.linkedin.com/in/farismuhammad28/',
   },
   {
@@ -40,7 +40,7 @@ export const users = [
     university: 'Institut Teknologi Insan Cendekia Mandiri',
     role: 'Frontend & Backend',
     image:
-      'https://cdn.discordapp.com/attachments/1365949598480466022/1365951429033988207/DSC04744.jpg?ex=680f2ce6&is=680ddb66&hm=4900926c0c8d5a7419fd200df51c1cb00dabf9d2bef7888ccd7c7be17e037495&',
+      'https://cdn.discordapp.com/attachments/1365949598480466022/1365951429033988207/DSC04744.jpg?ex=685117e6&is=684fc666&hm=7d0ba170768b669a4f3b188c10c8fab81a530841e3c46e0b12f9eafe3b8e67e2&',
     linkedin:
       'https://www.linkedin.com/in/fahreza-finandika-pardana-2b8a94224/',
   },
