@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { motion, stagger, useAnimate } from 'motion/react';
 import { cn } from '@/lib/utils';
 import styles from './css/TextGenerateEffect.module.css'; // Import CSS Module
@@ -21,7 +21,7 @@ export const TextGenerateEffect = ({
   const wordsArray = words.split(' ');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startAnimation = () => {
+  const startAnimation = useCallback(() => {
     animate(
       'span',
       {
@@ -33,7 +33,7 @@ export const TextGenerateEffect = ({
         delay: stagger(0.2),
       }
     );
-  };
+  }, [animate, filter, duration]);
 
   useEffect(() => {
     startAnimation(); // Run animation on initial mount
@@ -57,7 +57,7 @@ export const TextGenerateEffect = ({
         clearInterval(intervalRef.current); // Clear the interval on unmount
       }
     };
-  }, [scope.current, animate, filter, duration]); // Depend on animate, filter, and duration
+  }, [animate, filter, duration, startAnimation]); // Include startAnimation dependencies
 
   const renderWords = () => {
     return (

@@ -23,12 +23,31 @@ const GigiDetection = () => {
   const [showResult, setShowResult] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [apiResult, setApiResult] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('https://web-production-0a46.up.railway.app/soal')
-      .then((res) => res.json())
-      .then((data) => setSoal(data))
-      .catch(() => setSoal([]));
+    setLoading(true);
+    fetch('https://636f4111e83e.ngrok-free.app/soal', {
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+      },
+    })
+      .then((res) => {
+        console.log('Response status:', res.status);
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Data received:', data);
+        setSoal(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching soal:', error);
+        setError('Gagal memuat soal dari server');
+        setSoal([]);
+        setLoading(false);
+      });
   }, []);
 
   const handleSubmitToAPI = async () => {
@@ -38,17 +57,18 @@ const GigiDetection = () => {
     });
 
     try {
-      const res = await fetch(
-        'https://web-production-0a46.up.railway.app/predict',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }
-      );
+      const res = await fetch('https://636f4111e83e.ngrok-free.app/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify(payload),
+      });
       const data = await res.json();
       setApiResult(data.hasil);
-    } catch {
+    } catch (error) {
+      console.error('Error submitting to API:', error);
       setApiResult(
         'Gagal menghubungi server. Pastikan backend Flask berjalan.'
       );
@@ -143,13 +163,29 @@ const GigiDetection = () => {
                 berlubang pada si kecil. Dapatkan tips terbaik untuk menjaga
                 kesehatan gigi dan mulut buah hati Anda.
               </span>
+
+              {loading && (
+                <div className='text-lg'>Memuat soal dari server...</div>
+              )}
+
+              {error && <div className='text-lg text-red-300'>{error}</div>}
+
               <div className='mt-6'>
-                <Button
-                  value='Mulai Deteksi'
-                  variant='white'
-                  className='px-10 py-3 rounded-lg font-semibold hover:border-white'
-                  onClick={handleButtonClick}
-                />
+                {!loading && soal.length > 0 ? (
+                  <Button
+                    value='Mulai Deteksi'
+                    variant='white'
+                    className='px-10 py-3 rounded-lg font-semibold hover:border-white'
+                    onClick={handleButtonClick}
+                  />
+                ) : (
+                  <Button
+                    value={loading ? 'Memuat...' : 'Data Tidak Tersedia'}
+                    variant='white'
+                    className='px-10 py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed'
+                    onClick={() => {}}
+                  />
+                )}
               </div>
             </>
           )}
