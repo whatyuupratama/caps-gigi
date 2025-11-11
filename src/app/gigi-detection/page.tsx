@@ -28,7 +28,7 @@ const GigiDetection = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch('https://636f4111e83e.ngrok-free.app/soal', {
+    fetch('https://330bf0d51969.ngrok-free.app/soal', {
       headers: {
         'ngrok-skip-browser-warning': 'true',
       },
@@ -57,7 +57,7 @@ const GigiDetection = () => {
     });
 
     try {
-      const res = await fetch('https://636f4111e83e.ngrok-free.app/predict', {
+      const res = await fetch('https://330bf0d51969.ngrok-free.app/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
